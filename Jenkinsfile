@@ -15,15 +15,6 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
-            steps {
-                checkout scmGit(
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[url: 'https://github.com/sivasurya18288/POC.git']]
-                )
-            }
-        }
-
         stage('Verify Node') {
             steps {
                 bat '"C:\\Users\\sssurya\\nodejs\\node.exe" -v'
@@ -75,7 +66,13 @@ pipeline {
                 bat '''
                 set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
 
-                npx playwright test tests/example.spec.ts tests/poc.spec.ts --workers=1 --retries=0
+                npx playwright test ^
+                tests/example.spec.ts ^
+                tests/poc.spec.ts ^
+                tests/google_dummy_spec.ts ^
+                tests/dumm1_sauce_menu.spec.ts ^
+                --workers=1 ^
+                --retries=2
                 '''
             }
         }
@@ -93,7 +90,7 @@ pipeline {
 
         success {
             powershell '''
-            Start-Process -FilePath "C:\\JenkinsAgent\\StartAllure.bat"
+            Start-Process "C:\\JenkinsAgent\\StartAllure.bat"
             '''
             echo 'Pipeline Succeeded'
         }
