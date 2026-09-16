@@ -96,7 +96,7 @@ pipeline {
 
     }
 
-    post {
+        post {
 
         success {
             powershell '''
@@ -111,4 +111,7 @@ pipeline {
 
         always {
             echo 'Pipeline Completed'
+        }
+    }
+}
         
