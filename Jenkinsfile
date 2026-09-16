@@ -41,6 +41,15 @@ pipeline {
             }
         }
 
+        stage('Clean Allure Results') {
+            steps {
+                bat '''
+                if exist allure-results rmdir /s /q allure-results
+                if exist allure-report rmdir /s /q allure-report
+                '''
+            }
+        }
+
         stage('Launch Calculator') {
             steps {
                 bat '''
@@ -72,7 +81,7 @@ pipeline {
                 tests/google_dummy_spec.ts ^
                 tests/dumm1_sauce_menu.spec.ts ^
                 --workers=1 ^
-                --retries=2
+                --retries=0
                 '''
             }
         }
@@ -84,13 +93,14 @@ pipeline {
                 '''
             }
         }
+
     }
 
     post {
 
         success {
             powershell '''
-            Start-Process "C:\\JenkinsAgent\\StartAllure.bat"
+            Start-Process -FilePath "C:\\JenkinsAgent\\StartAllure.bat"
             '''
             echo 'Pipeline Succeeded'
         }
