@@ -82,8 +82,8 @@ test('Playwright + PAD Demo', async ({ page }) => {
   await page.locator('.shopping_cart_link').click();
 
   // Validate cart
-  await expect(page.locator('.inventory_item_name')).toContainText('Sauce Labs Backpack');
-  console.log('Backpack validation successful');
+await expect(
+    page.locator('.inventory_item_name').first()).toContainText('Sauce Labs Backpack');  console.log('Backpack validation successful');
   console.log('POC IS SUCCESS');
   console.log('WEB+PAD Integration Successful')
 });
