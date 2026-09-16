@@ -71,13 +71,14 @@ pipeline {
         }
 
         stage('Run Playwright Tests') {
-            steps {
-                bat '''
-                set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
+    steps {
+        bat '''
+        set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
 
-                npx playwright test tests/example.spec.ts tests/poc.spec.ts --workers=1 --retries=0
-                '''
-            }
+        npx playwright test tests --workers=1 --retries=0 --test-ignore=tests/singleapp_poc.spec.ts
+        '''
+    }
+}
         }
 
         stage('Generate Allure Report') {
