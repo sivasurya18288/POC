@@ -1,0 +1,1 @@
+$env:Path = "C:\Users\sssurya\nodejs;" + $env:Path
