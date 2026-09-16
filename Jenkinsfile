@@ -92,20 +92,18 @@ pipeline {
 
         post {
 
-        success {
-            powershell '''
-            Start-Process -FilePath "C:\\JenkinsAgent\\StartAllure.bat"
-            '''
-            echo 'Pipeline Succeeded'
-        }
+    success {
+        bat '''
+        start "" cmd /k "C:\\JenkinsAgent\\StartAllure.bat"
+        '''
+        echo 'Pipeline Succeeded'
+    }
 
-        failure {
-            echo 'Pipeline Failed'
-        }
+    failure {
+        echo 'Pipeline Failed'
+    }
 
-        always {
-            echo 'Pipeline Completed'
-        }
+    always {
+        echo 'Pipeline Completed'
     }
 }
-        
