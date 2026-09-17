@@ -106,23 +106,47 @@ pipeline {
 
             script {
 
-                withCredentials([string(credentialsId: 'teams-webhook', variable: 'TEAMS_WEBHOOK')]) {
+                def totalCount = 2
+                def passedCount = (currentBuild.currentResult == 'SUCCESS') ? 2 : 1
+                def failedCount = totalCount - passedCount
 
-                    writeFile file: 'teams.json', text: '''
+                writeFile file: 'teams.json', text: """
 {
   "type": "AdaptiveCard",
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "\\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
   "version": "1.4",
   "body": [
     {
       "type": "TextBlock",
       "size": "Large",
       "weight": "Bolder",
-      "text": "Jenkins Test Notification"
+      "text": "Automation Execution Summary"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Status: ${currentBuild.currentResult}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Build Number: ${env.BUILD_NUMBER}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Total Tests: ${totalCount}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Passed: ${passedCount}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Failed: ${failedCount}"
     }
   ]
 }
-'''
+"""
+
+                withCredentials([string(credentialsId: 'teams-webhook', variable: 'TEAMS_WEBHOOK')]) {
 
                     powershell '''
 Invoke-RestMethod `
@@ -131,7 +155,7 @@ Invoke-RestMethod `
   -ContentType "application/json" `
   -InFile teams.json
 
-Write-Host "Teams notification sent"
+Write-Host "Teams notification sent successfully"
 '''
                 }
             }
