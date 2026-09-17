@@ -86,7 +86,7 @@ pipeline {
                     if (fileExists('playwright-results.json')) {
                         echo 'playwright-results.json generated successfully'
                     } else {
-                        echo 'playwright-results.json not found'
+                        error 'playwright-results.json not found'
                     }
                 }
             }
@@ -104,9 +104,11 @@ pipeline {
     post {
 
         success {
-            bat '''
-            start "" cmd /k "C:\\JenkinsAgent\\StartAllure.bat"
-            '''
+
+            powershell '''
+Start-Process "C:\\JenkinsAgent\\StartAllure.bat"
+'''
+
             echo 'Pipeline Succeeded'
         }
 
@@ -117,6 +119,17 @@ pipeline {
         always {
 
             script {
+
+                def jsonText = readFile('playwright-results.json')
+                def results = readJSON text: jsonText
+
+                def totalCount = results.stats.expected
+                def failedCount = results.stats.unexpected
+                def passedCount = totalCount - failedCount
+
+                echo "Total Tests: ${totalCount}"
+                echo "Passed Tests: ${passedCount}"
+                echo "Failed Tests: ${failedCount}"
 
                 writeFile file: 'teams.json', text: """
 {
@@ -136,6 +149,18 @@ pipeline {
     {
       "type": "TextBlock",
       "text": "Build Number: ${env.BUILD_NUMBER}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Total Tests: ${totalCount}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Passed: ${passedCount}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Failed: ${failedCount}"
     }
   ]
 }
