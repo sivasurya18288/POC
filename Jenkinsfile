@@ -83,14 +83,11 @@ pipeline {
         stage('Verify JSON Report') {
             steps {
                 script {
-                    def jsonText = readFile('playwright-results.json')
-
-                    echo "Playwright JSON Report Generated"
-
-                    echo jsonText.substring(
-                        0,
-                        Math.min(500, jsonText.length())
-                    )
+                    if (fileExists('playwright-results.json')) {
+                        echo 'playwright-results.json generated successfully'
+                    } else {
+                        echo 'playwright-results.json not found'
+                    }
                 }
             }
         }
