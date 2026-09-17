@@ -100,14 +100,9 @@ pipeline {
             }
         }
 
-        stage('Publish Allure Report') {
+        stage('Archive Allure Report') {
             steps {
-                allure(
-                    includeProperties: false,
-                    jdk: '',
-                    reportBuildPolicy: 'ALWAYS',
-                    results: [[path: 'allure-results']]
-                )
+                archiveArtifacts artifacts: 'allure-report/**', fingerprint: true
             }
         }
     }
@@ -133,8 +128,8 @@ pipeline {
                 def failedCount = results.stats.unexpected
                 def passedCount = totalCount - failedCount
 
-                def allureUrl = "${env.BUILD_URL}allure/"
                 def buildUrl = "${env.BUILD_URL}"
+                def allureUrl = "${env.BUILD_URL}artifact/allure-report/index.html"
 
                 writeFile file: 'teams.json', text: """
 {
