@@ -104,11 +104,6 @@ pipeline {
     post {
 
         success {
-
-            powershell '''
-Start-Process "C:\\JenkinsAgent\\StartAllure.bat"
-'''
-
             echo 'Pipeline Succeeded'
         }
 
@@ -161,6 +156,13 @@ Start-Process "C:\\JenkinsAgent\\StartAllure.bat"
     {
       "type": "TextBlock",
       "text": "Failed: ${failedCount}"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "Open Jenkins Build",
+      "url": "${env.BUILD_URL}"
     }
   ]
 }
