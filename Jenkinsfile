@@ -108,51 +108,31 @@ pipeline {
 
                 withCredentials([string(credentialsId: 'teams-webhook', variable: 'TEAMS_WEBHOOK')]) {
 
-                    powershell """
-\$body = @'
+                    writeFile file: 'teams.json', text: '''
 {
-  "\\\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
   "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
   "version": "1.4",
   "body": [
     {
       "type": "TextBlock",
       "size": "Large",
       "weight": "Bolder",
-      "text": "Jenkins Automation Execution"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Status: ${currentBuild.currentResult}"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Job: ${env.JOB_NAME}"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Build Number: ${env.BUILD_NUMBER}"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Jenkins URL: ${env.BUILD_URL}"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Allure Report: ${env.BUILD_URL}allure/"
+      "text": "Jenkins Test Notification"
     }
   ]
 }
-'@
+'''
 
+                    powershell '''
 Invoke-RestMethod `
-    -Uri \$env:TEAMS_WEBHOOK `
-    -Method POST `
-    -ContentType "application/json" `
-    -Body \$body
+  -Uri $env:TEAMS_WEBHOOK `
+  -Method POST `
+  -ContentType "application/json" `
+  -InFile teams.json
 
-Write-Host "Teams notification sent successfully"
-"""
+Write-Host "Teams notification sent"
+'''
                 }
             }
 
