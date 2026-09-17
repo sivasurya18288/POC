@@ -75,8 +75,8 @@ pipeline {
                 bat '''
                 set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
 
-                npx playwright test tests/examples.spec.ts tests/poc.spec.ts tests/google_dummy.spec.ts tests/dummy_sauce_menu.spec.ts --workers=1 --retries=0 --reporter=json > playwright-results.json
-                '''
+npx playwright test tests/examples.spec.ts tests/poc.spec.ts tests/google_dummy.spec.ts tests/dummy_sauce_menu.spec.ts --workers=1 --retries=0
+``                '''
             }
         }
 
