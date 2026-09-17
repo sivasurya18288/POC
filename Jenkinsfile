@@ -109,21 +109,50 @@ pipeline {
                 withCredentials([string(credentialsId: 'teams-webhook', variable: 'TEAMS_WEBHOOK')]) {
 
                     powershell """
-                    \$body = @{
-                        title = 'Jenkins Automation Execution'
-                        text  = 'Status: ${currentBuild.currentResult}`n' +
-                                 'Job: ${env.JOB_NAME}`n' +
-                                 'Build Number: ${env.BUILD_NUMBER}`n' +
-                                 'Jenkins URL: ${env.BUILD_URL}`n' +
-                                 'Allure Report: ${env.BUILD_URL}allure/'
-                    } | ConvertTo-Json
+\$body = @'
+{
+  "\\\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "TextBlock",
+      "size": "Large",
+      "weight": "Bolder",
+      "text": "Jenkins Automation Execution"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Status: ${currentBuild.currentResult}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Job: ${env.JOB_NAME}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Build Number: ${env.BUILD_NUMBER}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Jenkins URL: ${env.BUILD_URL}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Allure Report: ${env.BUILD_URL}allure/"
+    }
+  ]
+}
+'@
 
-                    Invoke-RestMethod `
-                        -Uri \$env:TEAMS_WEBHOOK `
-                        -Method Post `
-                        -ContentType 'application/json' `
-                        -Body \$body
-                    """
+Invoke-RestMethod `
+    -Uri \$env:TEAMS_WEBHOOK `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body \$body
+
+Write-Host "Teams notification sent successfully"
+"""
                 }
             }
 
