@@ -71,20 +71,14 @@ pipeline {
         }
 
         stage('Run Playwright Tests') {
-            steps {
-                bat '''
-                set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
+    steps {
+        bat '''
+        set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
 
-                npx playwright test ^
-                tests/example.spec.ts ^
-                tests/poc.spec.ts ^
-                tests/google_dummy_spec.ts ^
-                tests/dumm1_sauce_menu.spec.ts ^
-                --workers=1 ^
-                --retries=0
-                '''
-            }
-        }
+        npx playwright test tests/example.spec.ts tests/poc.spec.ts tests/google_dummy.spec.ts tests/dumm1_sauce_menu.spec.ts --workers=1 --retries=0
+        '''
+    }
+}
 
         stage('Generate Allure Report') {
             steps {
@@ -96,21 +90,21 @@ pipeline {
 
     }
 
-    post {
+        post {
 
-        success {
-            powershell '''
-            Start-Process -FilePath "C:\\JenkinsAgent\\StartAllure.bat"
-            '''
-            echo 'Pipeline Succeeded'
-        }
-
-        failure {
-            echo 'Pipeline Failed'
-        }
-
-        always {
-            echo 'Pipeline Completed'
-        }
+    success {
+        bat '''
+        start "" cmd /k "C:\\JenkinsAgent\\StartAllure.bat"
+        '''
+        echo 'Pipeline Succeeded'
     }
+
+    failure {
+        echo 'Pipeline Failed'
+    }
+
+    always {
+        echo 'Pipeline Completed'
+    }
+}
 }
