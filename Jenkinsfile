@@ -75,8 +75,24 @@ pipeline {
                 bat '''
                 set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
 
-                npx playwright test tests/examples.spec.ts tests/poc.spec.ts tests/google_dummy.spec.ts tests/dummy_sauce_menu.spec.ts --workers=1 --retries=0
+                npx playwright test tests/examples.spec.ts tests/poc.spec.ts tests/google_dummy.spec.ts tests/dummy_sauce_menu.spec.ts --workers=1 --retries=0 --reporter=json > playwright-results.json
                 '''
+            }
+        }
+
+        stage('Parse Playwright Results') {
+            steps {
+                script {
+
+                    def jsonText = readFile('playwright-results.json')
+
+                    echo "Playwright JSON Report Generated"
+
+                    echo jsonText.substring(
+                        0,
+                        Math.min(500, jsonText.length())
+                    )
+                }
             }
         }
 
@@ -106,24 +122,6 @@ pipeline {
 
             script {
 
-                def logText = currentBuild.rawBuild.getLog(3000).join('\n')
-
-                def passedCount = 0
-                def failedCount = 0
-                def totalCount = 0
-
-                def passedMatcher = (logText =~ /(\\d+)\\s+passed/)
-                if (passedMatcher.find()) {
-                    passedCount = passedMatcher.group(1).toInteger()
-                }
-
-                def failedMatcher = (logText =~ /(\\d+)\\s+failed/)
-                if (failedMatcher.find()) {
-                    failedCount = failedMatcher.group(1).toInteger()
-                }
-
-                totalCount = passedCount + failedCount
-
                 writeFile file: 'teams.json', text: """
 {
   "type": "AdaptiveCard",
@@ -142,18 +140,6 @@ pipeline {
     {
       "type": "TextBlock",
       "text": "Build Number: ${env.BUILD_NUMBER}"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Total Tests: ${totalCount}"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Passed: ${passedCount}"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Failed: ${failedCount}"
     }
   ]
 }
