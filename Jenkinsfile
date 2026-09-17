@@ -106,6 +106,7 @@ pipeline {
 
             script {
 
+                // Current POC values
                 def totalCount = 2
                 def passedCount = (currentBuild.currentResult == 'SUCCESS') ? 2 : 1
                 def failedCount = totalCount - passedCount
@@ -113,7 +114,7 @@ pipeline {
                 writeFile file: 'teams.json', text: """
 {
   "type": "AdaptiveCard",
-  "\\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "\\\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
   "version": "1.4",
   "body": [
     {
