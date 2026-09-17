@@ -106,10 +106,23 @@ pipeline {
 
             script {
 
-                // Current POC values
-                def totalCount = 2
-                def passedCount = 2
+                def logText = currentBuild.rawBuild.getLog(3000).join('\n')
+
+                def passedCount = 0
                 def failedCount = 0
+                def totalCount = 0
+
+                def passedMatcher = (logText =~ /(\\d+)\\s+passed/)
+                if (passedMatcher.find()) {
+                    passedCount = passedMatcher.group(1).toInteger()
+                }
+
+                def failedMatcher = (logText =~ /(\\d+)\\s+failed/)
+                if (failedMatcher.find()) {
+                    failedCount = failedMatcher.group(1).toInteger()
+                }
+
+                totalCount = passedCount + failedCount
 
                 writeFile file: 'teams.json', text: """
 {
