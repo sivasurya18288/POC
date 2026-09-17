@@ -99,6 +99,17 @@ pipeline {
                 '''
             }
         }
+
+        stage('Publish Allure Report') {
+            steps {
+                allure(
+                    includeProperties: false,
+                    jdk: '',
+                    reportBuildPolicy: 'ALWAYS',
+                    results: [[path: 'allure-results']]
+                )
+            }
+        }
     }
 
     post {
@@ -122,9 +133,8 @@ pipeline {
                 def failedCount = results.stats.unexpected
                 def passedCount = totalCount - failedCount
 
-                echo "Total Tests: ${totalCount}"
-                echo "Passed Tests: ${passedCount}"
-                echo "Failed Tests: ${failedCount}"
+                def allureUrl = "${env.BUILD_URL}allure/"
+                def buildUrl = "${env.BUILD_URL}"
 
                 writeFile file: 'teams.json', text: """
 {
@@ -161,8 +171,13 @@ pipeline {
   "actions": [
     {
       "type": "Action.OpenUrl",
+      "title": "Open Allure Report",
+      "url": "${allureUrl}"
+    },
+    {
+      "type": "Action.OpenUrl",
       "title": "Open Jenkins Build",
-      "url": "${env.BUILD_URL}"
+      "url": "${buildUrl}"
     }
   ]
 }
