@@ -71,14 +71,14 @@ pipeline {
         }
 
         stage('Run Playwright Tests') {
-    steps {
-        bat '''
-        set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
+            steps {
+                bat '''
+                set PATH=C:\\Users\\sssurya\\nodejs;%PATH%
 
-        npx playwright test tests/example.spec.ts tests/poc.spec.ts tests/google_dummy.spec.ts tests/dumm1_sauce_menu.spec.ts --workers=1 --retries=0
-        '''
-    }
-}
+                npx playwright test tests/example.spec.ts tests/poc.spec.ts tests/google_dummy.spec.ts tests/dumm1_sauce_menu.spec.ts --workers=1 --retries=0
+                '''
+            }
+        }
 
         stage('Generate Allure Report') {
             steps {
@@ -87,24 +87,47 @@ pipeline {
                 '''
             }
         }
-
     }
 
-        post {
+    post {
 
-    success {
-        bat '''
-        start "" cmd /k "C:\\JenkinsAgent\\StartAllure.bat"
-        '''
-        echo 'Pipeline Succeeded'
-    }
+        success {
+            bat '''
+            start "" cmd /k "C:\\JenkinsAgent\\StartAllure.bat"
+            '''
+            echo 'Pipeline Succeeded'
+        }
 
-    failure {
-        echo 'Pipeline Failed'
-    }
+        failure {
+            echo 'Pipeline Failed'
+        }
 
-    always {
-        echo 'Pipeline Completed'
+        always {
+
+            script {
+
+                withCredentials([string(credentialsId: 'teams-webhook', variable: 'TEAMS_WEBHOOK')]) {
+
+                    powershell """
+                    \$body = @{
+                        title = 'Jenkins Automation Execution'
+                        text  = 'Status: ${currentBuild.currentResult}`n' +
+                                 'Job: ${env.JOB_NAME}`n' +
+                                 'Build Number: ${env.BUILD_NUMBER}`n' +
+                                 'Jenkins URL: ${env.BUILD_URL}`n' +
+                                 'Allure Report: ${env.BUILD_URL}allure/'
+                    } | ConvertTo-Json
+
+                    Invoke-RestMethod `
+                        -Uri \$env:TEAMS_WEBHOOK `
+                        -Method Post `
+                        -ContentType 'application/json' `
+                        -Body \$body
+                    """
+                }
+            }
+
+            echo 'Pipeline Completed'
+        }
     }
-}
 }
