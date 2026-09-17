@@ -122,6 +122,7 @@ pipeline {
                 )
             }
         }
+
     }
 
     post {
@@ -141,4 +142,90 @@ pipeline {
                     currentBuild.result = 'FAILURE'
                 } else {
                     currentBuild.result = 'SUCCESS'
-   
+                }
+
+                def allureUrl = "${env.BUILD_URL}allure/"
+                def buildUrl = "${env.BUILD_URL}"
+
+                writeFile file: 'teams.json', text: """
+{
+  "type": "AdaptiveCard",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "TextBlock",
+      "size": "Large",
+      "weight": "Bolder",
+      "text": "Automation Execution Summary"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Status: ${currentBuild.currentResult}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Build Number: ${env.BUILD_NUMBER}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Total Tests: ${totalCount}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Passed: ${passedCount}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Failed: ${failedCount}"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "Open Allure Report",
+      "url": "${allureUrl}"
+    },
+    {
+      "type": "Action.OpenUrl",
+      "title": "Open Jenkins Build",
+      "url": "${buildUrl}"
+    }
+  ]
+}
+"""
+
+                withCredentials([
+                    string(
+                        credentialsId: 'teams-webhook',
+                        variable: 'TEAMS_WEBHOOK'
+                    )
+                ]) {
+
+                    powershell '''
+Invoke-RestMethod `
+  -Uri $env:TEAMS_WEBHOOK `
+  -Method POST `
+  -ContentType "application/json" `
+  -InFile teams.json
+
+Write-Host "Teams notification sent successfully"
+'''
+                }
+
+                echo "Total Tests : ${totalCount}"
+                echo "Passed Tests: ${passedCount}"
+                echo "Failed Tests: ${failedCount}"
+            }
+
+            echo 'Pipeline Completed'
+        }
+
+        success {
+            echo 'Pipeline Succeeded'
+        }
+
+        failure {
+            echo 'Pipeline Failed'
+        }
+    }
+}
