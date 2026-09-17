@@ -79,21 +79,7 @@ npx playwright test tests/examples.spec.ts tests/poc.spec.ts tests/google_dummy.
 ``                '''
             }
         }
-
-        stage('Parse Playwright Results') {
-            steps {
-                script {
-
-                    def jsonText = readFile('playwright-results.json')
-
-                    echo "Playwright JSON Report Generated"
-
-                    echo jsonText.substring(
-                        0,
-                        Math.min(500, jsonText.length())
-                    )
-                }
-            }
+       
         }
 
         stage('Generate Allure Report') {
