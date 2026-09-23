@@ -1,0 +1,165 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Users\\sssurya\\nodejs\\node.exe",
+      "C:\\Users\\sssurya\\Playwright\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "poc.spec.ts"
+    ],
+    "configFile": "C:\\Users\\sssurya\\Playwright\\playwright.config.ts",
+    "rootDir": "C:/Users/sssurya/Playwright/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/sssurya/Playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/sssurya/Playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-results.json"
+        }
+      ],
+      [
+        "C:\\Users\\sssurya\\Playwright\\node_modules\\allure-playwright\\dist\\cjs\\index.js",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "poc.spec.ts",
+      "file": "poc.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Playwright + PAD Demo",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 36105,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Logged into SauceDemo successfully\n"
+                    },
+                    {
+                      "text": "Launching PAD...\n"
+                    },
+                    {
+                      "text": "PAD launched\n"
+                    },
+                    {
+                      "text": "Waiting for PAD completion...\n"
+                    },
+                    {
+                      "text": "PAD File Content: STATUS=COMPLETED\n"
+                    },
+                    {
+                      "text": "Normalized Content: STATUS=COMPLETED\n"
+                    },
+                    {
+                      "text": "PAD completed successfully\n"
+                    },
+                    {
+                      "text": "padCompleted = true\n"
+                    },
+                    {
+                      "text": "Continuing Playwright execution...\n"
+                    },
+                    {
+                      "text": "Backpack validation successful\n"
+                    },
+                    {
+                      "text": "POC IS SUCCESS\n"
+                    },
+                    {
+                      "text": "WEB+PAD Integration Successful\n"
+                    }
+                  ],
+                  "stderr": [
+                    {
+                      "buffer": ""
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-09-23T08:37:45.428Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6d7e63ce0b77add0e8be-46ea3ff44dd3973ca130",
+          "file": "poc.spec.ts",
+          "line": 5,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-23T08:37:44.615Z",
+    "duration": 38348.812,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
